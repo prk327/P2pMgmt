@@ -1,0 +1,20 @@
+{
+  "name": "p2pv1",
+  "version": "1.0.0",
+  "description": "dempproj",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "prabhakar",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "formidable": "^1.2.1",
+    "mongodb": "^3.3.3",
+    "mongoose": "^5.7.5",
+    "xlsx": "^0.15.1"
+  }
+}
