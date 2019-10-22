@@ -1,0 +1,152 @@
+/*Navigation bar start*/
+
+body{
+    margin: 0;
+    font-size: 1em;
+    background-color: #FFF4E1;
+}
+
+ul.topnav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #4DD0E1;
+  position: -webkit-sticky; /* Safari */
+  position:sticky;
+  top: 0;
+  box-shadow: inset 0px 0px 0 rgba(255,255,255,0.3), 0 0.1875em 0.1875em rgba(0, 0, 0, 0.3);
+}
+
+ul.topnav li {float: left;}
+
+ul.topnav li a:hover:not(.active) {background-color: rbga(86, 136, 184, .5);}
+
+/*ul.topnav li a.active {background-color: #4CAF50;}*/
+
+ul.topnav li.right {float: right;}
+
+@media screen and (max-width: 37.5em) {
+  ul.topnav li.right, 
+  ul.topnav li {float: none;}
+}
+
+/*Navigation bar end*/
+
+/*Button navbar*/
+
+.nav_btn{
+  display: block;
+  margin: 0.0625em;
+  color: rgb(82, 142, 150);
+  box-sizing: border-box;
+  text-align: center;
+  padding: 0.875em 1em;
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 0.3125em solid transparent;
+  text-shadow: 0.0625em 0.0625em 0.0625em rgba(255, 255, 255, 0.65);
+}
+
+.nav_btn:hover{
+    border-bottom: 0.3125em solid #FDD835;
+    box-shadow: inset 0px 0px 0 rgba(255,255,255,0.3), 0 0.1875em 0.1875em rgba(0, 0, 0, 0.3);
+}
+/*-----------------------------------------------------------*/
+/*footer decoration*/
+#FOOTER {
+    background-color:#e5e5e5;
+    text-align:center;
+    padding:10px;
+    margin-top:7px;
+}
+/*-------------------------------------------------------------*/
+.main {
+  float:left;
+  width:60%;
+  padding:0 20px;
+}
+
+@media only screen and (max-width:620px) {
+  /* For mobile phones: */
+  .menu {
+    width:100%;
+  }
+}
+/*------------------------------------------------------------------*/
+/*side nave bar */
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+/*  top: 0;*/
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+/*  padding-top: 3.75em;*/
+}
+
+.left_side {
+/*    padding: 8px 8px 8px 32px;*/
+    left: 0;
+    text-align: right;
+}
+
+.right_side {
+/*    padding: 8px 32px 8px 8px;*/
+    right: 0;
+    text-align: left;
+}
+
+.sidenav a, .dropdown-btn {
+  padding: 8px 8px 8px 8px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  border: none;
+    background: none;
+/*    width:100%;*/
+/*    text-align: left;*/
+    cursor: pointer;
+    outline: none;
+  transition: 0.3s;
+}
+
+.sidenav a:hover, .dropdown-btn:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+/*  position: absolute;*/
+/*  top: 0;*/
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.sidenav .closebtnRight {
+/*  position: absolute;*/
+/*  top: 0;*/
+  font-size: 36px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+/*drop down menu css*/
+/* Add an active class to the active dropdown button */
+.active_DropDown {
+  background-color: green;
+  color: white;
+}
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
+  display: none;
+  background-color: #262626;
+  padding-left: 8px;
+}

@@ -1,0 +1,17 @@
+<% include partials/header %>
+  
+<% include partials/navbar %>
+
+<div style="background-color:#e5e5e5;padding:15px;text-align:center;">
+  <h1>Data Source</h1>
+</div>
+
+
+<form action="/Dashboard" enctype="multipart/form-data" method="post">
+    <input type="text" name="title"><br>
+    <input type="file" name="upload" multiple="multiple"><br>
+    <input type="submit" value="Upload">
+</form>
+
+
+<% include partials/footer %>

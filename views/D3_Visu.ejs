@@ -1,0 +1,64 @@
+<% include partials/header %>
+  
+<% include partials/navbar %>
+  
+<!--
+<div style="background-color:#e5e5e5;padding:15px;text-align:center;">
+  <h1>Vendor Dashboard</h1>
+</div>
+-->
+
+<div style="overflow:auto"> 
+ 
+    <span style="font-size:30px;cursor:pointer;float:left" onclick="openNav()">&#9776; </span>
+
+<!--leftside bar-->
+    <div id="mySidenav" class="sidenav left_side">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#">Dimention</a>
+        <a href="#">Measure</a>
+        <a href="#">Asthetics</a>
+        <a href="#">Row</a>
+        <a href="#">Column</a>
+    </div>
+<!-------------------->
+      <div class="main">
+        <div class="canvas"></div>
+      </div>
+   
+    <span style="font-size:30px;cursor:pointer;float:right" onclick="openRightNav()">&#9776; </span>
+    
+  <!--rishtside bar-->
+    <div id="mySidenavRight" class="sidenav right_side">
+        <a href="javascript:void(0)" class="closebtnRight" onclick="closeRightNav()">&times;</a>
+        <button class="dropdown-btn">Dimention
+        <i>&#9947;</i>
+        </button>
+        <div id="Dimention" class="dropdown-container">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+        </div>
+        <button class="dropdown-btn">Measure
+        <i>&#9947;</i>
+        </button>
+        <div id="Measure" class="dropdown-container">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+        </div>
+        <a href="#">Asthetics</a>
+        <a href="#">Row</a>
+        <a href="#">Column</a>
+    </div>
+    
+</div>
+  
+
+   
+   
+  
+   <script src="https://d3js.org/d3.v5.js"></script>
+   <script src="/d3_codes.js"></script>
+    
+<% include partials/footer %>
