@@ -22,5 +22,15 @@ const xAxisGroup = graph.append('g') //this will append the axis on top
 
 const yAxisGroup = graph.append('g');
 
+//var invoice = #{invoice};
+//
+//var myVar = <%= JSON.stringify(invoice) %>;
+
+
+
+var inv = ejs.render('<%= invoice %>');
+
+console.log(inv);
+
 
 

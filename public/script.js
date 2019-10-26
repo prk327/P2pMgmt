@@ -30,3 +30,32 @@ for (i = 0; i < dropdown.length; i++) {
   });
 }
 //--------------------------------------------------------------
+//drag and drop function
+//below specify what should happen when the element is dragged.
+function dragstart_handler(ev) {
+ // Add this element's id to the drag payload so the drop handler will
+ // know which element to add to its tree
+    ev.dataTransfer.setData("text/html", ev.target.id);
+    ev.dataTransfer.dropEffect = "copy";
+}
+
+function drop_handler(ev) {
+    ev.preventDefault();
+ // Get the id of the target and add the moved element to the target's DOM
+    var data = ev.dataTransfer.getData("text/html");
+    var cln = document.getElementById(data).cloneNode(true);
+//creating a new id
+//    var newid = "new"+data;
+//// Change the id attribute of the newly created element:    
+//    cln.setAttribute( 'id', newid);
+//    console.log(cln);
+//    console.log(newid);
+//    console.log(document.getElementById(newid));
+    
+    ev.target.appendChild(cln);
+}
+
+function dragover_handler(ev) {
+ ev.preventDefault();
+ ev.dataTransfer.dropEffect = "move";
+}

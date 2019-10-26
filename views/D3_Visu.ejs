@@ -8,6 +8,13 @@
 </div>
 -->
 
+<!--rows and column dropzone-->
+<div id="Col" style="padding: 5px" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Column:</div>
+
+
+<div id="Row" style="padding: 5px" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Row:</div>
+
+<!--rows and column dropzone-->
 <div style="overflow:auto"> 
  
     <span style="font-size:30px;cursor:pointer;float:left" onclick="openNav()">&#9776; </span>
@@ -22,6 +29,7 @@
         <a href="#">Column</a>
     </div>
 <!-------------------->
+     
       <div class="main">
         <div class="canvas"></div>
       </div>
@@ -35,9 +43,18 @@
         <i>&#9947;</i>
         </button>
         <div id="Dimention" class="dropdown-container">
+<!--        this will display the database columns name-->
+    <%    let i = 0; %>
+    <%    columns.forEach(item => { %>
+            <a ID="Dimention_<%=i%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></a>
+    <%       i++; %>
+    <%     }); %>
+
+<!--
             <a href="#">Link 1</a>
             <a href="#">Link 2</a>
             <a href="#">Link 3</a>
+-->
         </div>
         <button class="dropdown-btn">Measure
         <i>&#9947;</i>

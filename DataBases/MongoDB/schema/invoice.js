@@ -1,6 +1,6 @@
-var mongoose    = require('mongoose');
+let mongoose    = require('mongoose');
 
-var invoiceSchema = new mongoose.Schema({
+let invoiceSchema = new mongoose.Schema({
     Invoice_Number: String, 
     Invoice_Entered_Date: Date,
     Invoice_Received_Date: Date,
@@ -26,6 +26,6 @@ var invoiceSchema = new mongoose.Schema({
     ]
 });
 
-var Invoice_Model = mongoose.model("Invoice_Model", invoiceSchema);
+let Invoice_Model = mongoose.model("Invoice_Model", invoiceSchema);
 
 module.exports = Invoice_Model;
