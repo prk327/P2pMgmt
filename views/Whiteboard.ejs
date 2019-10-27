@@ -22,7 +22,16 @@
 <!--leftside bar-->
     <div id="mySidenav" class="sidenav left_side">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="#">Dimention</a>
+        
+        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Tables</button>
+        <div id="Sheets" class="dropdown-container-left">
+<!--        this will display the database table name-->
+    <%    let j = 0; %>
+    <%    sheets.forEach(item => { %>
+            <a ID="Sheets_<%=j%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></a>
+    <%       j++; %>
+    <%     }); %>
+        </div>
         <a href="#">Measure</a>
         <a href="#">Asthetics</a>
         <a href="#">Row</a>

@@ -1,16 +1,13 @@
-var express     = require("express"),
-    app         = express(),
+var express         = require("express"),
+    app             = express(),
 //we need body parser in case of html form where we want to fetch the data from the user and do somethig woth it
-    bodyParser  = require("body-parser"),
+    bodyParser      = require("body-parser"),
 // getting-started with mongodb
-//    mongoose    = require('mongoose'),
-    mongoDB     = require("./DataBases/MongoDB/mongoDBConnection"),
-//this will read and parse the excel file
-    XLSX        = require('xlsx'),
-    formidable  = require('formidable'),
+    mongoDB         = require("./DataBases/MongoDB/mongoDBConnection"),
+////this will read and parse the excel file
 //this will load the routes
-    indexRoute  = require("./routes/index"),
-    databaseRoute  = require("./routes/database");
+    indexRoute      = require("./routes/index"),
+    dataSourceRoute   = require("./routes/dataSource");
 
 //retrive all invoices from the db and console.log each one
 //mongoDB.invoice.find({}, function(err, inv){
@@ -34,7 +31,7 @@ app.set("view engine", "ejs");
 //using the index route in the app
 app.use("/", indexRoute);
 //use the database route
-app.use("/Database", databaseRoute);
+app.use("/dataSource", dataSourceRoute);
 
 //pages for undefined routes
 app.get("*", (req, res) => res.send("Sorry! page not found....What are you doing with your life>"));

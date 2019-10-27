@@ -1,0 +1,78 @@
+<% include partials/header %>
+  
+<% include partials/navbar %>
+
+<!--rows and column dropzone-->
+<!--<div id="Col" style="padding: 5px" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Column:</div>-->
+
+<!--<div id="Row" style="padding: 5px" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Row:</div>-->
+
+<!--rows and column dropzone-->
+
+<div style="overflow:auto"> 
+ 
+    <span style="font-size:30px;cursor:pointer;float:left" onclick="openNav()">&#9776; </span>
+
+<!--leftside bar-->
+    <div id="mySidenav" class="sidenav left_side">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Tables</button>
+        <div id="Sheets" class="dropdown-container-left">
+<!--        this will display the database table name-->
+    <%    let j = 0; %>
+    <%    sheets.forEach(item => { %>
+            <a ID="Sheets_<%=j%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></a>
+    <%       j++; %>
+    <%     }); %>
+        </div>
+<!--
+        <a href="#">Measure</a>
+        <a href="#">Asthetics</a>
+        <a href="#">Row</a>
+        <a href="#">Column</a>
+-->
+    </div>
+<!-------------------->
+     
+      <div id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
+<!--        <div class="canvas"></div>-->
+      </div>
+   
+    <span style="font-size:30px;cursor:pointer;float:right" onclick="openRightNav()">&#9776; </span>
+    
+  <!--rishtside bar-->
+    <div id="mySidenavRight" class="sidenav right_side">
+        <a href="javascript:void(0)" class="closebtnRight" onclick="closeRightNav()">&times;</a>
+        <button class="dropdown-btn">Dimention
+        <i>&#9947;</i>
+        </button>
+        <div id="Dimention" class="dropdown-container">
+<!--        this will display the database columns name-->
+    <%    let i = 0; %>
+    <%    columns.forEach(item => { %>
+            <a ID="Dimention_<%=i%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></a>
+    <%       i++; %>
+    <%     }); %>
+        </div>
+        <button class="dropdown-btn">Measure
+        <i>&#9947;</i>
+        </button>
+        <div id="Measure" class="dropdown-container">
+            <a href="#">Link 1</a>
+            <a href="#">Link 2</a>
+            <a href="#">Link 3</a>
+        </div>
+        <a href="#">Asthetics</a>
+        <a href="#">Row</a>
+        <a href="#">Column</a>
+    </div>
+    
+</div>
+  
+  
+
+   <script src="https://d3js.org/d3.v5.js"></script>
+   <script src="/d3_codes.js"></script>
+    
+<% include partials/footer %>

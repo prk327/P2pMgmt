@@ -28,9 +28,9 @@ const yAxisGroup = graph.append('g');
 
 
 
-var inv = ejs.render('<%= invoice %>');
+//var inv = ejs.render('<%= invoice %>');
 
-console.log(inv);
+//console.log(inv);
 
 
 
