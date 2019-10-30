@@ -2,12 +2,6 @@
   
 <% include partials/navbar %>
 
-<!--rows and column dropzone-->
-<!--<div id="Col" style="padding: 5px" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Column:</div>-->
-
-<!--<div id="Row" style="padding: 5px" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">Row:</div>-->
-
-<!--rows and column dropzone-->
 
 <div style="overflow:auto"> 
  
@@ -33,15 +27,26 @@
         <a href="#">Column</a>
 -->
     </div>
-<!-------------------->
+    
+    
+<!--main contend for data manupulation-->
      
       <div id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
 <!--        <div class="canvas"></div>-->
       </div>
+      
+<!---------------------------------------------------------------------->
    
-    <span style="font-size:30px;cursor:pointer;float:right" onclick="openRightNav()">&#9776; </span>
+    
+    
+    
+
+    
     
   <!--rishtside bar-->
+   
+   <span style="font-size:30px;cursor:pointer;float:right" onclick="openRightNav()">&#9776; </span>
+   
     <div id="mySidenavRight" class="sidenav right_side">
         <a href="javascript:void(0)" class="closebtnRight" onclick="closeRightNav()">&times;</a>
         <button class="dropdown-btn">Dimention
@@ -69,6 +74,11 @@
     </div>
     
 </div>
+ 
+ <h3 id="worksheet" style="display: none">HTML Table</h3>
+ <div id="htmlTable" style="overflow-x:auto;"> 
+     <%= worksheet %>
+ </div>
   
   
 
