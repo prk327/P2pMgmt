@@ -63,10 +63,15 @@ ul.topnav li.right {float: right;}
 /*-------------------------------------------------------------*/
 .main {
   float:left;
-    height: 600px;
+  height: 600px;
   width:60%;
-  padding:0 20px;
-  background-color: #bdbdbd;
+  background-color: #333;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
 }
 
 @media only screen and (max-width:620px) {
@@ -161,4 +166,45 @@ ul.topnav li.right {float: right;}
 
 #rightButton {
     margin-left: auto;
+}
+
+/*the drag element effect*/
+.mainDrag {
+      position: relative;
+    background-color: #f39c12;
+    border: none;
+    padding: 20px;
+    width: 200px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    }
+.mainDrag:active {
+      background-color: rgba(168, 218, 220, 1.00);
+    }
+.mainDrag:after {
+    content: "";
+    background: #f1c40f;
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px !important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+.mainDrag:hover {
+      cursor: pointer;
+    background:#fff;
+   box-shadow:0px 2px 10px 5px #97B1BF;
+   color:#000;
+    }
+.mainDrag:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
 }

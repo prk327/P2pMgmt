@@ -1,24 +1,12 @@
-var express         = require("express"),
-    app             = express(),
+var express             = require("express"),
+    app                 = express(),
 //we need body parser in case of html form where we want to fetch the data from the user and do somethig woth it
-    bodyParser      = require("body-parser"),
+    bodyParser          = require("body-parser"),
 // getting-started with mongodb
-    mongoDB         = require("./DataBases/MongoDB/mongoDBConnection"),
-////this will read and parse the excel file
+    mongoDB             = require("./DataBases/MongoDB/mongoDBConnection"),
 //this will load the routes
-    indexRoute      = require("./routes/index"),
-    dataSourceRoute   = require("./routes/dataSource");
-
-//retrive all invoices from the db and console.log each one
-//mongoDB.invoice.find({}, function(err, inv){
-//    if(err){
-//        console.log("Oh No, Error!!");
-//        console.log(err);
-//    } else {
-//        console.log("All the invoices");
-//        console.log(inv);
-//    }
-//});
+    indexRoute          = require("./routes/index"),
+    dataSourceRoute     = require("./routes/dataSource");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -27,6 +15,9 @@ app.use(express.static("public"));
 
 //this is to not write the page extention
 app.set("view engine", "ejs");
+
+//this will enable multifolder view
+app.set('views', './views');
 
 //using the index route in the app
 app.use("/", indexRoute);

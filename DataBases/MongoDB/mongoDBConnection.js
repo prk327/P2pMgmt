@@ -3,7 +3,8 @@ let mongoose    = require('mongoose'),
 //this will import the invoice, vendor and payment schema
     invoice     = require("./schema/invoice"),
     vendor      = require("./schema/vendor"),
-    payment     = require("./schema/payment");
+    payment     = require("./schema/payment"),
+    datasource     = require("./schema/dataSource");
 mongoose.set('useUnifiedTopology', true);
 //creating new database if not exist
 let databaseName = "vendors";
@@ -18,7 +19,8 @@ db.once('open', function() {
 });
 //exporting the database schema
 module.exports = {
-    invoice :   invoice,
-    vendor  :   vendor,
-    payment :   payment
+    invoice         :   invoice,
+    vendor          :   vendor,
+    payment         :   payment,
+    datasource      :   datasource
 };

@@ -1,0 +1,115 @@
+<% include ../partials/header %>
+<link rel="stylesheet" href="/inputFormStyle.css">
+<% include ../partials/navbar %>
+
+<div class="container">
+    <h1>Create New Data Source</h1>
+    <form id="noExcelForm" name="bodyForm" value="bodyForm" action="/dataSource" enctype="application/x-www-form-urlencoded" method="post">
+        <div class="row">
+            <div class="col-25">
+                <label for="browsers">Select DataSource</label>
+            </div>
+            <div class="col-75">
+                <input list="browsers" name="vName" id="excelDS">
+                <datalist id="browsers">
+                    <option value="Oracle">
+                    <option value="MySQL">
+                    <option value="Microsoft SQL Server">
+                    <option value="PostgreSQL">
+                    <option value="Excel">
+                </datalist>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="dSIMG">Image</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="dSIMG" id="dSIMG" placeholder="image URL">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="uName">User Name</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="uName" id="uName" placeholder="User name">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="uPass">Password</label>
+            </div>
+            <div class="col-75">
+                <input type="password" name="uPass" id="uPass" placeholder="Password">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="IP_DNS">Database host IP address or DNS name</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="IP_DNS" id="IP_DNS" placeholder="Database host IP address or DNS name">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="port">Port</label>
+            </div>
+            <div class="col-75">
+                <input type="number" name="port" id="port" placeholder="Port">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="DBName">DataBase</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="DBName" id="DBName" placeholder="Database name">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="InsVal">Instance name (if any)</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="InsVal" id="InsVal" placeholder="Instance name (if any)">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="Domain">Domain (SQL Server only)</label>
+            </div>
+            <div class="col-75">
+                <input type="text" name="Domain" id="Domain" placeholder="Domain (SQL Server only)">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-25">
+                <label for="MSAuth">Windows authentication</label>
+            </div>
+            <div class="col-75">
+                <input type="checkbox" name="MSAuth" id="MSAuth" placeholder="Use Windows authentication">
+            </div>
+        </div>
+        <div class="row">
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+    <form id="excelForm" name="bodyForm" value="fileForm" class="excelDS" action="/dataSource" enctype="multipart/form-data" method="post">
+        <div class="row">
+            <div class="col-25">
+                <label for="upload">Select File to upload</label>
+            </div>
+            <div class="col-75">
+                <input type="file" name="upload" id="upload" multiple="multiple">
+            </div>
+        </div>
+        <div class="row">
+            <input type="submit" value="Upload">
+        </div>
+    </form>
+</div>
+
+<script src="/inputFormScript.js"></script>
+<% include ../partials/footer %>

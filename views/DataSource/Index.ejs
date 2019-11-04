@@ -1,0 +1,15 @@
+<% include ../partials/header %>
+  
+<% include ../partials/navbar %>
+
+<div>
+    <h1>Welcome to the DataSource Page</h1>
+<%  dataSource.forEach(dataSource => { %>
+        <div>
+            <h4><%= dataSource["Vendor Name"] %></h4>
+            <img src="<%= dataSource["Vendor Image"] %>" alt="<%= dataSource["Vendor Name"] %>">
+        </div>
+<%    });    %>
+</div>
+  
+<% include ../partials/footer %>

@@ -1,25 +1,25 @@
 //nav bar function
 function openNav() {
-    document.getElementById("main").style.marginLeft = "25%";
-    document.getElementById("mySidenav").style.width = "25%";   
+    document.querySelector("#main").style.marginLeft = "25%";
+    document.querySelector("#mySidenav").style.width = "25%";   
 }
 
 function closeNav() {
-    document.getElementById("main").style.marginLeft = "0";
-    document.getElementById("mySidenav").style.width = "0";
+    document.querySelector("#main").style.marginLeft = "0";
+    document.querySelector("#mySidenav").style.width = "0";
 }
 function openRightNav() {
-    document.getElementById("main").style.marginRight = "25%";
-    document.getElementById("mySidenavRight").style.width = "25%";
+    document.querySelector("#main").style.marginRight = "25%";
+    document.querySelector("#mySidenavRight").style.width = "25%";
 }
 
 function closeRightNav() {
-    document.getElementById("main").style.marginRight = "0";
-    document.getElementById("mySidenavRight").style.width = "0";
+    document.querySelector("#main").style.marginRight = "0";
+    document.querySelector("#mySidenavRight").style.width = "0";
 }
 //----------------------------------------------------------------------
 /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
-var dropdown = document.getElementsByClassName("dropdown-btn");
+var dropdown = document.querySelectorAll(".dropdown-btn");
 //var i;
 
 for (let i = 0; i < dropdown.length; i++) {
@@ -33,92 +33,66 @@ for (let i = 0; i < dropdown.length; i++) {
   }
   });
 }
+
+
 //--------------------------------------------------------------
 //drag and drop function
 //below specify what should happen when the element is dragged.
 
-//var dragElem;
 
 function dragstart_handler(ev) {
  // Add this element's id to the drag payload so the drop handler will
  // know which element to add to its tree
     ev.dataTransfer.setData("text/html", ev.target.id);
     ev.dataTransfer.dropEffect = "move";
+    
+//    this will add EL to the main element
+    let canvasElement = document.querySelector("#main");
+    let str = ev.target.id;
+    let n = str.search(/Sheets_/);
+    if(n != -1){
+//        console.log("Found The Sheet!");
+        canvasElement.addEventListener("dragenter",function(){
+            this.style.backgroundColor = "#f39c12";
+        });
+        canvasElement.addEventListener("dragleave",function(){
+            this.style.backgroundColor = "red";
+        });
+        canvasElement.addEventListener("drop",function(){
+            this.style.backgroundColor = "#333";
+        });
+    } else {
+        console.log("regex not working");
+    }
+    
 }
 
 function drop_handler(ev) {
     ev.preventDefault();
  // Get the id of the target and add the moved element to the target's DOM
     let data = ev.dataTransfer.getData("text/html");
-    let cln = document.getElementById(data).cloneNode(true);
-    
-    console.log(document.getElementById(data).innerHTML);
+//    this will create a new div element
+    let new_element = document.createElement("DIV");
+//    this will create a textnode for the above div element
+    let new_textNode = document.createTextNode(document.getElementById(data).textContent);
 
-    let newid = "new"+data;
+//    let newid = "new"+data;
 //// Change the id attribute of the newly created element:    
-    cln.setAttribute( 'id', newid);
-    cln.setAttribute( 'style', "position: absolute;z-index: 9;border: 1px solid #d3d3d3;background-color: #f1f1f1;");
-    cln.ondragstart = "return false;"; //clear ondragstart attribute
-    cln.draggable = false; //clear draggable event
-    ev.target.appendChild(cln);
+    new_element.removeAttribute("id");
+    new_element.classList.add('mainDrag');
+
+    new_element.appendChild(new_textNode);
     
-//    this function will take sheet name as input and display the table on the html table
-//    
-//    let worksheet = document.getElementById("worksheet").value;
-//        
-////        
-//    
-//    console.log(worksheet);
-    
-    
-    
-    
-    
+    ev.target.appendChild(new_element);
     
     //Make the DIV element draggagle:
-    //this will run the dragelement
-    dragElement(cln);
-
-    function dragElement(elmnt) {
-          let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-          if (elmnt) {
-            /* if present, the header is where you move the DIV from:*/
-            elmnt.onmousedown = dragMouseDown;
-          } else {
-            /* otherwise, move the DIV from anywhere inside the DIV:*/
-            elmnt.onmousedown = dragMouseDown;
-          }
-
-      function dragMouseDown(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
-            document.onmousemove = elementDrag;
-          }
-
-          function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-          }
-
-          function closeDragElement() {
-            /* stop moving when mouse button is released:*/
-            document.onmouseup = null;
-            document.onmousemove = null;
-          }
-        }
+    
+    let dragItem = document.querySelectorAll(".mainDrag");
+    let container = document.querySelector("#main");
+    
+    for(let i = 0; i < dragItem.length; i++){
+        dragElement(dragItem[i], container);
+    }
     
 }
 
@@ -127,3 +101,65 @@ function dragover_handler(ev) {
  ev.dataTransfer.dropEffect = "move";
 }
 
+function dragElement(dragItem, container) {
+    let active = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    container.addEventListener("touchstart", dragStart, false);
+    container.addEventListener("touchend", dragEnd, false);
+    container.addEventListener("touchmove", drag, false);
+
+    container.addEventListener("mousedown", dragStart, false);
+    container.addEventListener("mouseup", dragEnd, false);
+    container.addEventListener("mousemove", drag, false);
+
+    function dragStart(e) {
+      if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - xOffset;
+        initialY = e.touches[0].clientY - yOffset;
+      } else {
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+      }
+        
+      if (e.target === dragItem) {
+        active = true;
+      }
+    }
+
+    function dragEnd(e) {
+      initialX = currentX;
+      initialY = currentY;
+
+      active = false;
+    }
+
+    function drag(e) {
+      if (active) {
+      
+        e.preventDefault();
+      
+        if (e.type === "touchmove") {
+          currentX = e.touches[0].clientX - initialX;
+          currentY = e.touches[0].clientY - initialY;
+        } else {
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+        }
+
+        xOffset = currentX;
+        yOffset = currentY;
+
+        setTranslate(currentX, currentY, dragItem);
+      }
+    }
+
+    function setTranslate(xPos, yPos, el) {
+      el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+    }
+}
