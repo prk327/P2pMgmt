@@ -1,15 +1,134 @@
 <% include ../partials/header %>
-  
+<style>
+    #Container {
+/*
+        width: 360px;
+        margin: 0 auto 0 0;
+        border: 2px solid gray;
+*/
+        overflow: auto;
+    }
+
+    .completed {
+        color: gray;
+    }
+</style>
+
 <% include ../partials/navbar %>
 
-<div>
-    <h1>Welcome to the DataSource Page</h1>
-<%  dataSource.forEach(dataSource => { %>
+<div id="Container">
+   
+    <h1>Welcome To DataSource Page</h1>
+    <span style="font-size:30px;cursor:pointer;float:left" onclick="openNav()">&#9776; </span>
+    
+    <div id="mySidenav" class="sidenav left_side">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>DataBase</button>
         <div>
-            <h4><%= dataSource["Vendor Name"] %></h4>
-            <img src="<%= dataSource["Vendor Image"] %>" alt="<%= dataSource["Vendor Name"] %>">
         </div>
-<%    });    %>
+
+       <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Excel Files</button>
+        <div id="Excel_Files">
+        </div>
+
+        
+    </div>
+    
+    <div id="main" class="main">
+        <div class="canvas"></div>
+      </div>
+    
 </div>
-  
+
+
+
+
+<script>
+    let objSentFromSrv = <%- JSON.stringify(excelModel); %>
+    /**
+     * Creates a element hirerchy with dynamic value
+     * @function dynamicElement
+     * @param {String} docID The element id or class with css lookup, that can be used as a parent
+     * @param {Object} Object_Ser A JS object from where values are to be added into the element
+     * @param {Array} Element The list of element needs to be created, in the order it was defined
+     * @param {Number} nodeIndex The index used to fetch the required value from the object
+     */
+    function dynamicElement(docID = "#Excel_Files", Object_Ser = objSentFromSrv, Element = ["div", "ul", "li"], nodeIndex = 1) {
+        let bodyElement = document.querySelector(docID);
+        let parent;
+        let childElement;
+        let childNode;
+        let body;
+        if (Element.length === 1) {
+            Object_Ser.forEach(item => {
+                childElement = document.createElement(Element[0]);
+                childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
+                childElement.appendChild(childNode);
+                bodyElement.appendChild(childElement);
+            });
+        } else if (Element.length === 2) {
+            for (let i = Element.length - 2; i >= 0; i--) {
+                Object_Ser.forEach(item => {
+                    parent = document.createElement(Element[i]);
+                    childElement = document.createElement(Element[Element.length - 1]);
+                    childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
+                    childElement.appendChild(childNode);
+                    parent.appendChild(childElement);
+                    bodyElement.appendChild(parent);
+                });
+            }
+        } else if (Element.length > 2) {
+            body = document.createElement(Element[Element.length - 3]);
+            Object_Ser.forEach(item => {
+                parent = document.createElement(Element[Element.length - 2]);
+                childElement = document.createElement(Element[Element.length - 1]);
+                childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
+                childElement.appendChild(childNode);
+                parent.appendChild(childElement);
+                body.appendChild(parent);
+            });
+            if (Element.length - 3 >= 1) {
+                for (let i = Element.length - 4; i >= 0; i--) {
+                    parent = document.createElement(Element[i]);
+                    parent.appendChild(body);
+                    body = parent;
+                }
+                bodyElement.appendChild(body);
+            } else {
+                bodyElement.appendChild(body);
+            }
+        }
+    }
+
+    dynamicElement();
+
+    eventAdd();
+
+
+    /**
+     * add an event and function to element
+     * @function eventAdd
+     * @param {String} elementName The element id or class with css lookup, that can be used to select the element
+     * @param {String} eventName The event name that need to be assign
+     * @param {Function} functionName The function that will run when the event is trigerred
+     */
+    function eventAdd(elementName = "#Excel_Files li", eventName = "click", functionName = classToggle) {
+        let listEve = document.querySelectorAll(elementName);
+        for (let i = 0; i < listEve.length; i++) {
+            listEve[i].addEventListener(eventName, functionName, false);
+        }
+    }
+
+    /**
+     * The function that will toggle class
+     * @function classToggle
+     * @param {Event} e event object
+     * @param {String} classObject The name of the class
+     */
+    function classToggle(e, classObject) {
+        e.currentTarget.classList.toggle("completed");
+    }
+</script>
+
 <% include ../partials/footer %>

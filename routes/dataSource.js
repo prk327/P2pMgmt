@@ -4,36 +4,52 @@ let express = require("express"),
     }),
     mongoDB = require("../DataBases/MongoDB/mongoDBConnection"),
     mongoose = require('mongoose'),
-//    mongooseDynamic = require('mongoose-dynamic-schemas'),
-//this will read and parse the excel file
-    XLSX            = require('xlsx'),
-    formidable      = require('formidable');
-
+    //    mongooseDynamic = require('mongoose-dynamic-schemas'),
+    //this will read and parse the excel file
+    XLSX = require('xlsx'),
+    formidable = require('formidable');
 
 const path = require('path');
 
 //this will create a empty schema
-//let dynamicSchema   = mongoose.Schema({});
-//let dynamicModel    = mongoose.model('dynamics', dynamicSchema);
+const excelSchema = new mongoose.Schema({}, {strict: false});
+const excelModel = mongoose.model('excelModel', excelSchema);
 
 //creating a empty variable for sheets and columns
 let columns = [];
 let sheets = [];
-let worksheet;
+let excel_DSList = {};
 let workbook;
 
 //Database get Route
 router.get("/", (req, res) => {
-    mongoDB.datasource.find({}, (err, dataSource) => {
+    
+//    mongoDB.datasource.find({}, (err, dataSource) => {
+//        if (err) {
+//            console.log("Okey!, we didn't expect this");
+//            console.log(err);
+//        } else {
+//            res.render("DataSource/Index", {
+//                dataSource: dataSource
+//            });
+//        }
+//    });
+
+    //getting the context of excel files
+//    mr = db.runCommand({ "mapreduce" : "activities", "map" : function() { for (var key in this) { emit(key, null); } }, "reduce" : function(key, stuff) { return null; }, "out": "activities" + "_keys" })
+    excelModel.find({}, (err, excelModel) => {
         if (err) {
             console.log("Okey!, we didn't expect this");
             console.log(err);
         } else {
+//                console.log(excelModel);
+
             res.render("DataSource/Index", {
-                dataSource: dataSource
+                excelModel: excelModel
             });
         }
     });
+
 
 
     //    let invoice = [{
@@ -102,42 +118,29 @@ router.post("/", function (req, res) {
                 console.log(cat);
             }
         });
-//        get the excel data
+        //get the excel data
     } else {
-        //get data from the form and add to dashboard array
-
-//var excelSchema = new mongoose.Schema(
-//     {
-//          "Vendor Name": String,
-//          "Vendor Image": String,
-//          "User name":String,
-//          "Password":String,
-//          "Database host IP address or DNS name": String,
-//          "Port": Number,
-//          "Database name": String,
-//          "Instance name (if any)": String,
-//          "Domain (SQL Server only)": String,
-//          "Use Windows authentication": Boolean
-//     }
-//);
-//
-//var databaseSchema_Model = mongoose.model("databaseSchema_Model", databaseSchema);
-        
-        
-        
         let form = new formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
-            var f = files[Object.keys(files)[0]];
+            let f = files[Object.keys(files)[0]];
             workbook = XLSX.readFile(f.path);
             /* DO SOMETHING WITH workbook HERE */
-            let excelColumns = {};
-            for (i = 0; i < workbook.SheetNames.length; i++) {
-//                this will create a schema based on excel sheets
-                excelColumns[workbook.SheetNames[i]] = generateJSONEngine(workbook, workbook.SheetNames[i]);
-//                sheets.push(workbook.SheetNames[i]);
-                //          worksheet = generateJSONEngine(workbook, 'Table');
+            let excelWorkbook = {};
+            let excelSchema = {};
+            for (let i = 0; i < workbook.SheetNames.length; i++) {
+                //this will create a json object of the excel workbook
+                let sheetName = workbook.SheetNames[i];
+                let workSheet = workbook.Sheets[sheetName];
+                excelWorkbook[sheetName] = XLSX.utils.sheet_to_json(workSheet, {
+                    defval: "none"
+                });
             }
-            console.log(excelColumns["Sheet JS"]);
+            //this will create a mongoose schema from above JSON dynamically
+            excelWorkbook[f.name.split(".")[0]] = new excelModel(excelWorkbook).save(err => {
+                if (err) return handleError(err);
+                // saved!
+                console.log("Saved Successfully!!");
+            });
         });
     }
     //redirect back to dashboard page
@@ -150,44 +153,6 @@ router.get("/new", function (req, res) {
 });
 
 
-
-//jason export function
-generateJSONEngine = (workbook, sheetName) => {
-    var XLSX = require('xlsx');
-    var workbook = workbook;
-    var sheet_name_list = workbook.SheetNames;
-    //    sheet_name_list.forEach(function(y) {
-    var worksheet = workbook.Sheets[sheetName];
-    var headers = {};
-    var data = [];
-    for (z in worksheet) {
-        console.log(z);
-        if (z[0] === '!') continue;
-        //parse out the column, row, and value
-        var tt = 0;
-        for (var i = 0; i < z.length; i++) {
-            if (!isNaN(z[i])) {
-                tt = i;
-                break;
-            }
-        };
-        var col = z.substring(0, tt);
-        var row = parseInt(z.substring(tt));
-        var value = worksheet[z].v;
-        //store header names
-        if (row == 1 && value) {
-            headers[col] = value;
-            continue;
-        }
-        if (!data[row]) data[row] = {};
-        data[row][headers[col]] = value;
-    }
-    //drop those first two rows which are empty
-    data.shift();
-    data.shift();
-    return data;
-    //    });  
-}
 
 //dynamic html table function from JSON Object
 Dynamic_HtmlTable = (Dataframe, rows) => {
