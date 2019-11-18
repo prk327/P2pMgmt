@@ -12,40 +12,47 @@ let express = require("express"),
 const path = require('path');
 
 //this will create a empty schema
-const excelSchema = new mongoose.Schema({}, {strict: false});
+const excelSchema = new mongoose.Schema({}, {
+    strict: false
+});
 const excelModel = mongoose.model('excelModel', excelSchema);
 
 //creating a empty variable for sheets and columns
 let columns = [];
 let sheets = [];
-let excel_DSList = {};
+let excelSheets = [];
 let workbook;
+
+
 
 //Database get Route
 router.get("/", (req, res) => {
-    
-//    mongoDB.datasource.find({}, (err, dataSource) => {
-//        if (err) {
-//            console.log("Okey!, we didn't expect this");
-//            console.log(err);
-//        } else {
-//            res.render("DataSource/Index", {
-//                dataSource: dataSource
-//            });
-//        }
-//    });
 
-    //getting the context of excel files
-//    mr = db.runCommand({ "mapreduce" : "activities", "map" : function() { for (var key in this) { emit(key, null); } }, "reduce" : function(key, stuff) { return null; }, "out": "activities" + "_keys" })
+    //    mongoDB.datasource.find({}, (err, dataSource) => {
+    //        if (err) {
+    //            console.log("Okey!, we didn't expect this");
+    //            console.log(err);
+    //        } else {
+    //            res.render("DataSource/Index", {
+    //                dataSource: dataSource
+    //            });
+    //        }
+    //    });
+
+    //getting the keys of database table
     excelModel.find({}, (err, excelModel) => {
         if (err) {
             console.log("Okey!, we didn't expect this");
             console.log(err);
         } else {
-//                console.log(excelModel);
-
+            for (let j = 0; j < excelModel.length; j++) {
+                excelSheets.push({
+                    "ID": (excelModel[j])["_id"],
+                    "Sheets": Object.keys(excelModel[j]["_doc"])[1]
+                });
+            }
             res.render("DataSource/Index", {
-                excelModel: excelModel
+                excelModel: excelSheets
             });
         }
     });

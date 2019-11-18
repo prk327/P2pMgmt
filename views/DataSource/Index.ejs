@@ -29,7 +29,18 @@
         </div>
 
        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Excel Files</button>
+<!--
         <div id="Excel_Files">
+        </div>
+-->
+        
+        <div id="Excel_Files" class="dropdown-container-left">
+<!--        this will display the table sheet name-->
+    <%    let j = 0; %>
+    <%    excelModel.forEach(item => { %>
+            <a ID="Sheets_<%=j%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item.Sheets %></a>
+    <%       j++; %>
+    <%     }); %>
         </div>
 
         
@@ -101,9 +112,9 @@
         }
     }
 
-    dynamicElement();
+//    dynamicElement();
 
-    eventAdd();
+//    eventAdd();
 
 
     /**

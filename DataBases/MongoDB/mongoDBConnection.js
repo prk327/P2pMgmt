@@ -17,6 +17,7 @@ db.once('open', function() {
   // we're connected!
     console.log("" + databaseName + " Connected!");
 });
+
 //exporting the database schema
 module.exports = {
     invoice         :   invoice,
