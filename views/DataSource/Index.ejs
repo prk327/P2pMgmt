@@ -38,15 +38,17 @@
 <!--        this will display the table sheet name-->
     <%    let j = 0; %>
     <%    excelModel.forEach(item => { %>
-            <a ID="Sheets_<%=j%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item.Sheets %></a>
+            <a ID="Sheets_<%=item.ID%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item.Sheets %></a>
     <%       j++; %>
     <%     }); %>
         </div>
 
+       
+       
         
     </div>
     
-    <div id="main" class="main">
+    <div id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
         <div class="canvas"></div>
       </div>
     
@@ -55,8 +57,11 @@
 
 
 
-<script>
+<script>    
     let objSentFromSrv = <%- JSON.stringify(excelModel); %>
+        
+        objSentFromSrv.forEach(item => console.log(item));
+        
     /**
      * Creates a element hirerchy with dynamic value
      * @function dynamicElement

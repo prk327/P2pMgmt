@@ -94,6 +94,10 @@ function drop_handler(ev) {
         dragElement(dragItem[i], container);
     }
     
+    let params = {"key":data};
+//    now we will post the sheet name to mongodb and fetch the result in a table
+    dynamicPost("/dataSource", params);
+    
 }
 
 function dragover_handler(ev) {
@@ -162,4 +166,34 @@ function dragElement(dragItem, container) {
     function setTranslate(xPos, yPos, el) {
       el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
     }
+}
+
+
+/**
+ * sends a request to the specified url from a form. this will change the window location.
+ * @param {string} path the path to send the post request to
+ * @param {object} params the paramiters to add to the url
+ * @param {string} [method=post] the method to use on the form
+ */
+function dynamicPost(path, params, method='post') {
+
+  // The rest of this code assumes you are not using a library.
+  // It can be made less wordy if you use one.
+  const form = document.createElement('form');
+  form.method = method;
+  form.action = path;
+  form.enctype = "text/plain";
+
+  for (const key in params) {
+    if (params.hasOwnProperty(key)) {
+      const hiddenField = document.createElement('input');
+      hiddenField.type = 'hidden';
+      hiddenField.name = key;
+      hiddenField.value = params[key];
+      form.appendChild(hiddenField);
+    }
+  }
+
+  document.body.appendChild(form);
+  form.submit();
 }

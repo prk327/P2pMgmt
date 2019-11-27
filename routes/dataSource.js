@@ -7,9 +7,28 @@ let express = require("express"),
     //    mongooseDynamic = require('mongoose-dynamic-schemas'),
     //this will read and parse the excel file
     XLSX = require('xlsx'),
-    formidable = require('formidable');
+    formidable = require('formidable'),
+    {
+        parse
+    } = require('querystring');
 
 const path = require('path');
+
+//use this function to parse plain text
+function collectRequestData(request, callback) {
+    const FORM_URLENCODED = 'text/plain';
+    if (request.headers['content-type'] === FORM_URLENCODED) {
+        let body = '';
+        request.on('data', chunk => {
+            body += chunk.toString();
+        });
+        request.on('end', () => {
+            callback(parse(body));
+        });
+    } else {
+        callback(null);
+    }
+}
 
 //this will create a empty schema
 const excelSchema = new mongoose.Schema({}, {
@@ -20,42 +39,49 @@ const excelModel = mongoose.model('excelModel', excelSchema);
 //creating a empty variable for sheets and columns
 let columns = [];
 let sheets = [];
-let excelSheets = [];
+let excelSheets;
 let workbook;
 
-
-
-//Database get Route
+//datasource get Route
 router.get("/", (req, res) => {
-
-    //    mongoDB.datasource.find({}, (err, dataSource) => {
-    //        if (err) {
-    //            console.log("Okey!, we didn't expect this");
-    //            console.log(err);
-    //        } else {
-    //            res.render("DataSource/Index", {
-    //                dataSource: dataSource
-    //            });
-    //        }
-    //    });
-
-    //getting the keys of database table
-    excelModel.find({}, (err, excelModel) => {
-        if (err) {
-            console.log("Okey!, we didn't expect this");
-            console.log(err);
-        } else {
-            for (let j = 0; j < excelModel.length; j++) {
-                excelSheets.push({
-                    "ID": (excelModel[j])["_id"],
-                    "Sheets": Object.keys(excelModel[j]["_doc"])[1]
+//    checking the encoding type for segregating the route
+    if (req.query.valid !== undefined) {
+        excelSheets = []; //reset the array
+//        accessing the sheet name from the post route after replacing new line and carriage return
+        let passedVariable = req.query.valid.replace(/\s+/g, ' ').trim();
+        console.log(passedVariable);
+        //getting the sheet data from database table
+        excelModel.find({_id:passedVariable}, (err, excelModel) => {
+            if (err) {
+                console.log("Okey!, we didn't expect this");
+            } else {
+                console.log(excelModel);
+                res.render("DataSource/Index", {excelModel: excelModel});
+            }
+        });
+    } else {
+        excelSheets = []; //reset the array
+        //getting the keys of database table
+        excelModel.find({}, (err, excelModel) => {
+            if (err) {
+                console.log("Okey!, we didn't expect this");
+            } else {
+                for (let j = 0; j < excelModel.length; j++) {
+                    excelSheets.push({
+                        "ID": (excelModel[j])["_id"],
+                        "Sheets": Object.keys(excelModel[j]["_doc"])[1]
+                    });
+                }
+                res.render("DataSource/Index", {
+                    excelModel: excelSheets
                 });
             }
-            res.render("DataSource/Index", {
-                excelModel: excelSheets
-            });
-        }
-    });
+        });
+
+    }
+
+
+
 
 
 
@@ -125,8 +151,9 @@ router.post("/", function (req, res) {
                 console.log(cat);
             }
         });
+        res.redirect('/dataSource');
         //get the excel data
-    } else {
+    } else if (req.headers["content-type"] === "multipart/form-data") {
         let form = new formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
             let f = files[Object.keys(files)[0]];
@@ -149,9 +176,20 @@ router.post("/", function (req, res) {
                 console.log("Saved Successfully!!");
             });
         });
+        res.redirect('/dataSource');
+        //        this will get the sheet name from the form and send it to main route
+    } else if (req.headers["content-type"] === "text/plain") {
+//        accessing the form data and creating a query string to send the variable to get route
+        const querystring = require('querystring');
+        collectRequestData(req, result => {
+            const query = querystring.stringify({
+                "a": 1,
+                "b": 2,
+                "valid": result.key.split("_")[1]
+            });
+            res.redirect('/dataSource?' + query);
+        });
     }
-    //redirect back to dashboard page
-    res.redirect("/dataSource");
 });
 
 //Database form route to show the form
