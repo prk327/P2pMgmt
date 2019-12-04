@@ -6,8 +6,13 @@ var express             = require("express"),
     mongoDB             = require("./DataBases/MongoDB/mongoDBConnection"),
 //this will load the routes
     indexRoute          = require("./routes/index"),
-    dataSourceRoute     = require("./routes/dataSource");
+    dataSourceRoute     = require("./routes/dataSource"),
+    methodOverride      = require('method-override');
 
+//to enable put and delete request in html form
+app.use(methodOverride('_method'));
+
+//to parse the form data
 app.use(bodyParser.urlencoded({extended: true}));
 
 //this will serve the public directory, and then we can use any template from that directory
@@ -21,6 +26,7 @@ app.set('views', './views');
 
 //using the index route in the app
 app.use("/", indexRoute);
+
 //use the database route
 app.use("/dataSource", dataSourceRoute);
 

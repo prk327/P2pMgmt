@@ -1,6 +1,41 @@
+<!--
 <ul class="topnav">
        <li class="right"><a class="nav_btn" href="#LOGO">LOGO</a></li>
        <li><a class ="active nav_btn" href="/">HOME</a></li>
        <li><a class ="nav_btn" href="/dataSource">Data Source</a></li>
        <li><a class="nav_btn" href="#about">About</a></li>
 </ul>
+-->
+
+
+<div class="navbar">
+  <a href="#home">Home</a>
+  <a href="#news" >LOGO</a>
+  <div class="dropdown">
+    <button class="dropbtn" onclick="myFunction()">Data 
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content" id="myDropdown">
+      <div class="header">
+        <h2>Connect To File</h2>
+      </div>   
+      <div class="row">
+        <div class="column">
+          <a href="/dataSource/new">Excel</a>
+          <a href="#">CSV</a>
+          <a href="#">JSON</a>
+        </div>
+      </div>
+      <div class="header">
+        <h2>Connect To Data Server</h2>
+      </div>
+      <div class="row">
+        <div class="column">
+          <a href="#">Oracle</a>
+          <a href="#">PostGreSQL</a>
+          <a href="#">SnowFlake</a>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>

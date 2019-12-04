@@ -1,88 +1,150 @@
-<% include partials/header %>
-  
-<% include partials/navbar %>
+<% include ../partials/header %>
+<style>
+    #Container {
+/*
+        width: 360px;
+        margin: 0 auto 0 0;
+        border: 2px solid gray;
+*/
+        overflow: auto;
+    }
 
+    .completed {
+        color: gray;
+    }
+</style>
 
-<div style="overflow:auto"> 
- 
+<% include ../partials/navbar %>
+
+<div id="Container">
+   
+    <h1>Welcome To DataSource Page</h1>
     <span style="font-size:30px;cursor:pointer;float:left" onclick="openNav()">&#9776; </span>
-
-<!--leftside bar-->
+    
     <div id="mySidenav" class="sidenav left_side">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         
-        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Tables</button>
-        <div id="Sheets" class="dropdown-container-left">
-<!--        this will display the database table name-->
+        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>DataBase</button>
+        <div>
+        </div>
+
+       <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Excel Files</button>
+<!--
+        <div id="Excel_Files">
+        </div>
+-->
+        
+        <div id="Excel_Files" class="dropdown-container-left">
+<!--        this will display the table sheet name-->
     <%    let j = 0; %>
-    <%    sheets.forEach(item => { %>
-            <a ID="Sheets_<%=j%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></a>
+    <%    excelModel.forEach(item => { %>
+            <a ID="Sheets_<%=item.ID%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item.Sheets %></a>
     <%       j++; %>
     <%     }); %>
         </div>
-<!--
-        <a href="#">Measure</a>
-        <a href="#">Asthetics</a>
-        <a href="#">Row</a>
-        <a href="#">Column</a>
--->
-    </div>
-    
-    
-<!--main contend for data manupulation-->
-     
-      <div id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
-<!--        <div class="canvas"></div>-->
-      </div>
-      
-<!---------------------------------------------------------------------->
-   
-    
-    
-    
 
-    
-    
-  <!--rishtside bar-->
-   
-   <span style="font-size:30px;cursor:pointer;float:right" onclick="openRightNav()">&#9776; </span>
-   
-    <div id="mySidenavRight" class="sidenav right_side">
-        <a href="javascript:void(0)" class="closebtnRight" onclick="closeRightNav()">&times;</a>
-        <button class="dropdown-btn">Dimention
-        <i>&#9947;</i>
-        </button>
-        <div id="Dimention" class="dropdown-container">
-<!--        this will display the database columns name-->
-    <%    let i = 0; %>
-    <%    columns.forEach(item => { %>
-            <a ID="Dimention_<%=i%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></a>
-    <%       i++; %>
-    <%     }); %>
-        </div>
-        <button class="dropdown-btn">Measure
-        <i>&#9947;</i>
-        </button>
-        <div id="Measure" class="dropdown-container">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
-        </div>
-        <a href="#">Asthetics</a>
-        <a href="#">Row</a>
-        <a href="#">Column</a>
+       
+       
+        
     </div>
+    
+    <div id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
+        <div class="canvas"></div>
+      </div>
     
 </div>
- 
- <h3 id="worksheet" style="display: none">HTML Table</h3>
- <div id="htmlTable" style="overflow-x:auto;"> 
-     <%= worksheet %>
- </div>
-  
-  
 
-   <script src="https://d3js.org/d3.v5.js"></script>
-   <script src="/d3_codes.js"></script>
-    
-<% include partials/footer %>
+
+
+
+<script>    
+    let objSentFromSrv = <%- JSON.stringify(excelModel); %>
+        
+        objSentFromSrv.forEach(item => console.log(item));
+        
+    /**
+     * Creates a element hirerchy with dynamic value
+     * @function dynamicElement
+     * @param {String} docID The element id or class with css lookup, that can be used as a parent
+     * @param {Object} Object_Ser A JS object from where values are to be added into the element
+     * @param {Array} Element The list of element needs to be created, in the order it was defined
+     * @param {Number} nodeIndex The index used to fetch the required value from the object
+     */
+    function dynamicElement(docID = "#Excel_Files", Object_Ser = objSentFromSrv, Element = ["div", "ul", "li"], nodeIndex = 1) {
+        let bodyElement = document.querySelector(docID);
+        let parent;
+        let childElement;
+        let childNode;
+        let body;
+        if (Element.length === 1) {
+            Object_Ser.forEach(item => {
+                childElement = document.createElement(Element[0]);
+                childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
+                childElement.appendChild(childNode);
+                bodyElement.appendChild(childElement);
+            });
+        } else if (Element.length === 2) {
+            for (let i = Element.length - 2; i >= 0; i--) {
+                Object_Ser.forEach(item => {
+                    parent = document.createElement(Element[i]);
+                    childElement = document.createElement(Element[Element.length - 1]);
+                    childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
+                    childElement.appendChild(childNode);
+                    parent.appendChild(childElement);
+                    bodyElement.appendChild(parent);
+                });
+            }
+        } else if (Element.length > 2) {
+            body = document.createElement(Element[Element.length - 3]);
+            Object_Ser.forEach(item => {
+                parent = document.createElement(Element[Element.length - 2]);
+                childElement = document.createElement(Element[Element.length - 1]);
+                childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
+                childElement.appendChild(childNode);
+                parent.appendChild(childElement);
+                body.appendChild(parent);
+            });
+            if (Element.length - 3 >= 1) {
+                for (let i = Element.length - 4; i >= 0; i--) {
+                    parent = document.createElement(Element[i]);
+                    parent.appendChild(body);
+                    body = parent;
+                }
+                bodyElement.appendChild(body);
+            } else {
+                bodyElement.appendChild(body);
+            }
+        }
+    }
+
+//    dynamicElement();
+
+//    eventAdd();
+
+
+    /**
+     * add an event and function to element
+     * @function eventAdd
+     * @param {String} elementName The element id or class with css lookup, that can be used to select the element
+     * @param {String} eventName The event name that need to be assign
+     * @param {Function} functionName The function that will run when the event is trigerred
+     */
+    function eventAdd(elementName = "#Excel_Files li", eventName = "click", functionName = classToggle) {
+        let listEve = document.querySelectorAll(elementName);
+        for (let i = 0; i < listEve.length; i++) {
+            listEve[i].addEventListener(eventName, functionName, false);
+        }
+    }
+
+    /**
+     * The function that will toggle class
+     * @function classToggle
+     * @param {Event} e event object
+     * @param {String} classObject The name of the class
+     */
+    function classToggle(e, classObject) {
+        e.currentTarget.classList.toggle("completed");
+    }
+</script>
+
+<% include ../partials/footer %>

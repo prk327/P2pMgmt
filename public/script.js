@@ -1,4 +1,21 @@
 //nav bar function
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(e) {
+  if (!e.target.matches('.dropbtn')) {
+  var myDropdown = document.getElementById("myDropdown");
+    if (myDropdown.classList.contains('show')) {
+      myDropdown.classList.remove('show');
+    }
+  }
+}
+
+
 function openNav() {
     document.querySelector("#main").style.marginLeft = "25%";
     document.querySelector("#mySidenav").style.width = "25%";   
@@ -51,7 +68,6 @@ function dragstart_handler(ev) {
     let str = ev.target.id;
     let n = str.search(/Sheets_/);
     if(n != -1){
-//        console.log("Found The Sheet!");
         canvasElement.addEventListener("dragenter",function(){
             this.style.backgroundColor = "#f39c12";
         });
@@ -95,6 +111,7 @@ function drop_handler(ev) {
     }
     
     let params = {"key":data};
+    
 //    now we will post the sheet name to mongodb and fetch the result in a table
     dynamicPost("/dataSource", params);
     

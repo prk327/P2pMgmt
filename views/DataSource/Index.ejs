@@ -1,5 +1,33 @@
 <% include ../partials/header %>
 <style>
+    body{
+        background: #4CA1AF;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #C4E0E5, #4CA1AF);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #C4E0E5, #4CA1AF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    }
+    
+    #datasource ul li span{
+        background: #e74c3c;
+        height: 40px;
+        margin-right: 20px;
+        text-align: center;
+        color: white;
+        width: 0;
+        display: inline-block;
+        transition: 0.2s linear;
+        opacity: 0;
+    }
+    
+    li:hover span{
+        width: 40px;
+        opacity: 1.0;
+    }
+    
+    .fa-plus{
+        float:right;
+    }
+    
     #Container {
 /*
         width: 360px;
@@ -12,6 +40,30 @@
     .completed {
         color: gray;
     }
+    
+    #datasource li{
+        background: white;
+    }
+    
+    .listClick{
+        color: gray;
+        text-decoration: line-through;
+    }
+    
+    .deleteClick{
+        color: red;
+    }
+    
+    input{
+        font-size: 18px;
+        color: #2980b9;
+        background-color: #f7f7f7;
+        width: 100%;
+        padding: 13px 13px 13px 20px;
+        box-sizing: border-box;
+        border: 3px solid rgba(0,0,0,0);
+    }
+    
 </style>
 
 <% include ../partials/navbar %>
@@ -24,28 +76,30 @@
     <div id="mySidenav" class="sidenav left_side">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         
-        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>DataBase</button>
-        <div>
+        <button id="rightButton" class="dropdown-btn">DataBase<i class="fas fa-plus"></i></button>
+        <div id="datasource">
+        <input type="text">
+        <ul>
+           <%    let j = 0; %>
+    <%    datasource.forEach(item => { %>
+            <li><span><i class="fas fa-trash-alt"></i></span> <%= item['Vendor Name'] %></li>
+    <%       j++; %>
+    <%     }); %>
+            
+        </ul>
+        
+         
+        
         </div>
 
        <button id="rightButton" class="dropdown-btn"><i>&#9947;</i>Excel Files</button>
-<!--
-        <div id="Excel_Files">
-        </div>
--->
+
         
         <div id="Excel_Files" class="dropdown-container-left">
 <!--        this will display the table sheet name-->
-    <%    let j = 0; %>
-    <%    excelModel.forEach(item => { %>
-            <a ID="Sheets_<%=item.ID%>" href="#" draggable="true" ondragstart="dragstart_handler(event)"><%= item.Sheets %></a>
-    <%       j++; %>
-    <%     }); %>
+   
         </div>
 
-       
-       
-        
     </div>
     
     <div id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
@@ -55,96 +109,36 @@
 </div>
 
 
-
+<span></span>
 
 <script>    
-    let objSentFromSrv = <%- JSON.stringify(excelModel); %>
+//    check off the specific datasource name
+    $("#datasource ul").on("click", "li", function(){
+        $(this).toggleClass("listClick");
+    });
+    
+//    delete the specific datasource name
+    $("#datasource ul").on("click", "li span", function(event){
+        $(this).parent().fadeOut(500, function(){
+            $(this).remove();
+        });
+//        this will stop the li event to trigger and so on
+        event.stopPropagation();
+    });
+    
+    $("input[type='text']").keypress(function(event){
+        if(event.which === 13){
+            let dataName = $(this).val();
+            $(this).val("");
+             $("#datasource ul").append(`<li><span><i class="fas fa-trash-alt"></i></span> ${dataName}</li>`)
+        }
+    });
+    
+    
+    let objSentFromSrv = <%- JSON.stringify(datasource); %>
         
         objSentFromSrv.forEach(item => console.log(item));
-        
-    /**
-     * Creates a element hirerchy with dynamic value
-     * @function dynamicElement
-     * @param {String} docID The element id or class with css lookup, that can be used as a parent
-     * @param {Object} Object_Ser A JS object from where values are to be added into the element
-     * @param {Array} Element The list of element needs to be created, in the order it was defined
-     * @param {Number} nodeIndex The index used to fetch the required value from the object
-     */
-    function dynamicElement(docID = "#Excel_Files", Object_Ser = objSentFromSrv, Element = ["div", "ul", "li"], nodeIndex = 1) {
-        let bodyElement = document.querySelector(docID);
-        let parent;
-        let childElement;
-        let childNode;
-        let body;
-        if (Element.length === 1) {
-            Object_Ser.forEach(item => {
-                childElement = document.createElement(Element[0]);
-                childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
-                childElement.appendChild(childNode);
-                bodyElement.appendChild(childElement);
-            });
-        } else if (Element.length === 2) {
-            for (let i = Element.length - 2; i >= 0; i--) {
-                Object_Ser.forEach(item => {
-                    parent = document.createElement(Element[i]);
-                    childElement = document.createElement(Element[Element.length - 1]);
-                    childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
-                    childElement.appendChild(childNode);
-                    parent.appendChild(childElement);
-                    bodyElement.appendChild(parent);
-                });
-            }
-        } else if (Element.length > 2) {
-            body = document.createElement(Element[Element.length - 3]);
-            Object_Ser.forEach(item => {
-                parent = document.createElement(Element[Element.length - 2]);
-                childElement = document.createElement(Element[Element.length - 1]);
-                childNode = document.createTextNode(Object.keys(item)[nodeIndex]);
-                childElement.appendChild(childNode);
-                parent.appendChild(childElement);
-                body.appendChild(parent);
-            });
-            if (Element.length - 3 >= 1) {
-                for (let i = Element.length - 4; i >= 0; i--) {
-                    parent = document.createElement(Element[i]);
-                    parent.appendChild(body);
-                    body = parent;
-                }
-                bodyElement.appendChild(body);
-            } else {
-                bodyElement.appendChild(body);
-            }
-        }
-    }
 
-//    dynamicElement();
-
-//    eventAdd();
-
-
-    /**
-     * add an event and function to element
-     * @function eventAdd
-     * @param {String} elementName The element id or class with css lookup, that can be used to select the element
-     * @param {String} eventName The event name that need to be assign
-     * @param {Function} functionName The function that will run when the event is trigerred
-     */
-    function eventAdd(elementName = "#Excel_Files li", eventName = "click", functionName = classToggle) {
-        let listEve = document.querySelectorAll(elementName);
-        for (let i = 0; i < listEve.length; i++) {
-            listEve[i].addEventListener(eventName, functionName, false);
-        }
-    }
-
-    /**
-     * The function that will toggle class
-     * @function classToggle
-     * @param {Event} e event object
-     * @param {String} classObject The name of the class
-     */
-    function classToggle(e, classObject) {
-        e.currentTarget.classList.toggle("completed");
-    }
 </script>
 
 <% include ../partials/footer %>
