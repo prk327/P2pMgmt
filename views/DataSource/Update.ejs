@@ -9,7 +9,7 @@
             <ul>
                 <%    let j = 0; %>
                 <%    excelModel.forEach(item => { %>
-                <li ID="Sheets_<%=item.ID%>" draggable="true" ondragstart="dragstart_handler(event)"><%= item.Sheets %></li>
+                <li ID="Sheets_<%=j%>" draggable="true" ondragstart="dragstart_handler(event)"><%= item %></li>
                 <%       j++; %>
                 <%     }); %>
             </ul>
@@ -18,14 +18,14 @@
 </div>
 
 
-<div class="whiteArea">
+<div class="whiteArea" id="main" class="main" ondrop="drop_handler(event)" ondragover="dragover_handler(event)">
     <h1>The white space for dragging the sheet</h1>
-    <div class="tablesObject">
+    <div class="mainDrag">
 
     </div>
 </div>
 
-<div class="TableFields">
+<div id="TableFields">
 
 </div>
 

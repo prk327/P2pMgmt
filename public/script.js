@@ -110,10 +110,10 @@ function drop_handler(ev) {
         dragElement(dragItem[i], container);
     }
     
-    let params = {"key":data};
+    let params = {"key":document.getElementById(data).textContent};
     
 //    now we will post the sheet name to mongodb and fetch the result in a table
-    dynamicPost("/dataSource", params);
+    dynamicPost("/dataSource?_method=PUT", params);
     
 }
 
@@ -197,6 +197,7 @@ function dynamicPost(path, params, method='post') {
   // The rest of this code assumes you are not using a library.
   // It can be made less wordy if you use one.
   const form = document.createElement('form');
+    form.id = "dragForm"
   form.method = method;
   form.action = path;
   form.enctype = "text/plain";
@@ -213,4 +214,26 @@ function dynamicPost(path, params, method='post') {
 
   document.body.appendChild(form);
   form.submit();
+    
+//ajax post request
+// Attach a submit handler to the form
+$( "#dragForm" ).submit(function( event ) {
+ 
+  // Stop form from submitting normally
+  event.preventDefault();
+ 
+  // Get some values from elements on the page:
+  var $form = $( this ),
+    term = $form.find( "input[name='key']" ).val(),
+    url = $form.attr( "action" );
+ 
+  // Send the data using post
+  var posting = $.post( url, { s: term } );
+ 
+  // Put the results in a div
+  posting.done(function( data ) {
+    var content = $( data ).find( "#content" );
+    $( "#TableFields" ).empty().append( content );
+  });
+});
 }

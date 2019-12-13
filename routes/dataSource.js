@@ -10,7 +10,8 @@ let express = require("express"),
     formidable = require('formidable'),
     {
         parse
-    } = require('querystring');
+    } = require('querystring'),
+    fs = require('fs');
 
 const path = require('path');
 
@@ -37,13 +38,10 @@ const excelSchema = new mongoose.Schema({}, {
 const excelModel = mongoose.model('excelModel', excelSchema);
 
 //creating a empty variable for sheets and columns
-//let columns = [];
-//let sheets = [];
-//let excelSheets;
-//let workbook;
+let excelSheets;
 let excelWorkbook = {};
-//let excelSchema = {};
- 
+let upload_path = "./DataBases/Excel/";
+
 
 //Database form route to show the form
 router.get("/new", function (req, res) {
@@ -54,40 +52,83 @@ router.get("/new", function (req, res) {
 router.post("/", function (req, res) {
     if (req.headers["content-type"].match(/multipart\/form-data/gi)[0] === "multipart/form-data") {
         let form = new formidable.IncomingForm();
-        form.parse(req, function (err, fields, files) {
-            let f = files[Object.keys(files)[0]];
-            let workbook = XLSX.readFile(f.path);
-            /* DO SOMETHING WITH workbook HERE */
-//            excelWorkbook = {};
-//            excelSchema = {};
-            for (let i = 0; i < workbook.SheetNames.length; i++) {
-                //this will create a json object of the excel workbook
-                let sheetName = workbook.SheetNames[i];
-                let workSheet = workbook.Sheets[sheetName];
-                excelWorkbook[sheetName] = XLSX.utils.sheet_to_json(workSheet, {
-                    defval: "none"
-                });
-            }
-            //this will create a mongoose schema from above JSON dynamically
-            excelWorkbook[f.name.split(".")[0]] = new excelModel(excelWorkbook).save(err => {
-                if (err) return handleError(err);
-                // saved!
-                console.log("Saved Successfully!!");
-            });
-            //        accessing the form data and creating a query string to send the variable to get route
+        form.parse(req);
+        form.on('fileBegin', function (name, file) {
+            file.path = upload_path + file.name;
+        });
+        form.on('file', function (name, file) {
+            console.log('Uploaded ' + file.name);
             const querystring = require('querystring');
             collectRequestData(req, result => {
                 const query = querystring.stringify({
-                    "dataSourceName": f.name.split(".")[0]
-//                    "tableNames": workbook.SheetNames
+                    "dataSourceName": file.name,
+                    "dataTypes": "Excel"
                 });
-//                res.send(query);
                 res.redirect('/dataSource?' + query);
             });
         });
-        //        this will get the sheet name from the form and send it to main route
+        //        form.parse(req, function (err, fields, files) {
+        //            console.log(__dirname);
+        //            // oldpath : temporary folder to which file is saved to
+        //            let oldpath = files.upload.path;
+        //            let newpath = upload_path + files.upload.name;
+        //            // copy the file to a new location
+        //            fs.rename(oldpath, newpath, function (err) {
+        //                if (err) throw err;
+        //                const querystring = require('querystring');
+        //                collectRequestData(req, result => {
+        //                    const query = querystring.stringify({
+        //                        "dataSourceName": file.name,
+        //                        "dataTypes": "Excel"
+        //                    });
+        //                    res.redirect('/dataSource?' + query);
+        //                });
+        //            });
+        //        });
     }
 });
+
+
+
+
+
+//router.post("/", function (req, res) {
+//    if (req.headers["content-type"].match(/multipart\/form-data/gi)[0] === "multipart/form-data") {
+//        let form = new formidable.IncomingForm();
+//        form.parse(req, function (err, fields, files) {
+//            let f = files[Object.keys(files)[0]];
+//            let workbook = XLSX.readFile(f.path);
+//            /* DO SOMETHING WITH workbook HERE */
+////            excelWorkbook = {};
+////            excelSchema = {};
+//            for (let i = 0; i < workbook.SheetNames.length; i++) {
+//                //this will create a json object of the excel workbook
+//                let sheetName = workbook.SheetNames[i];
+//                let workSheet = workbook.Sheets[sheetName];
+//                excelWorkbook[sheetName] = XLSX.utils.sheet_to_json(workSheet, {
+//                    defval: "none"
+//                });
+//            }
+//            //this will create a mongoose schema from above JSON dynamically
+//            excelWorkbook[f.name.split(".")[0]] = new excelModel(excelWorkbook).save(err => {
+//                if (err) return handleError(err);
+//                // saved!
+//                console.log("Saved Successfully!!");
+//            });
+//            //        accessing the form data and creating a query string to send the variable to get route
+//            const querystring = require('querystring');
+//            collectRequestData(req, result => {
+//                const query = querystring.stringify({
+//                    "dataSourceName": f.name.split(".")[0]
+////                    "tableNames": workbook.SheetNames
+//                });
+////                res.send(query);
+//                res.redirect('/dataSource?' + query);
+//            });
+//        });
+//        //        this will get the sheet name from the form and send it to main route
+//    }
+//});
 
 
 
@@ -100,53 +141,66 @@ router.get("/", (req, res) => {
     //            res.render("DataSource/Index", {datasource: datasource});
     //        }
     //    });
-    //    
+
     //this will go to put request    
     //    checking the encoding type for segregating the route
-    if (req.query.dataSourceName !== undefined) {
-        console.log(req.query.dataSourceName);
+    if (req.query.dataTypes === "Excel") {
+        let XLSX = require('xlsx');
+        let workbook = XLSX.readFile(upload_path + req.query.dataSourceName);
         excelSheets = []; //reset the array
+        /* DO SOMETHING WITH workbook HERE */
+        for (let i = 0; i < workbook.SheetNames.length; i++) {
+            excelSheets.push(workbook.SheetNames[i]);
+            //                let workSheet = workbook.Sheets[sheetName];
+            //                excelWorkbook[sheetName] = XLSX.utils.sheet_to_json(workSheet, {
+            //                    defval: "none"
+            //                });
+        }
+
+
+
+
         //        accessing the sheet name from the post route after replacing new line and carriage return
-//        let passedVariable = req.query.tableNames.replace(/\s+/g, ' ').trim();
-//        console.log(passedVariable);
+        //        let passedVariable = req.query.tableNames.replace(/\s+/g, ' ').trim();
+        //        console.log(passedVariable);
         //getting the sheet data from database table
-        excelModel.find({}, (err, excelModel) => {
-            if (err) {
-                console.log("Okey!, we didn't expect this");
-            } else {
-                for (let j = 0; j < excelModel.length; j++) {
-                    excelSheets.push({
-                        "ID": (excelModel[j])["_id"],
-                        "Sheets": Object.keys(excelModel[j]["_doc"])[1]
-                    });
-                }
-                res.render("dataSource/Update", {
-                    excelModel: excelSheets,
-                    dSource: req.query.dataSourceName
-                });
-            }
+        //        excelModel.find({}, (err, excelModel) => {
+        //            if (err) {
+        //                console.log("Okey!, we didn't expect this");
+        //            } else {
+        //                for (let j = 0; j < excelModel.length; j++) {
+        //                    excelSheets.push({
+        //                        "ID": (excelModel[j])["_id"],
+        //                        "Sheets": Object.keys(excelModel[j]["_doc"])[1]
+        //                    });
+        //                }
+        res.render("dataSource/Update", {
+            excelModel: excelSheets,
+            dSource: req.query.dataSourceName,
         });
-    } 
-//    else {
-//        excelSheets = []; //reset the array
-//        //getting the keys of database table
-//        excelModel.find({}, (err, excelModel) => {
-//            if (err) {
-//                console.log("Okey!, we didn't expect this");
-//            } else {
-//                for (let j = 0; j < excelModel.length; j++) {
-//                    excelSheets.push({
-//                        "ID": (excelModel[j])["_id"],
-//                        "Sheets": Object.keys(excelModel[j]["_doc"])[1]
-//                    });
-//                }
-//                res.render("dataSource/Update", {
-//                    excelModel: excelSheets
-//                });
-//            }
-//        });
-//
-//    }
+        //            }
+        //        });
+    }
+    //    else {
+    //        excelSheets = []; //reset the array
+    //        //getting the keys of database table
+    //        excelModel.find({}, (err, excelModel) => {
+    //            if (err) {
+    //                console.log("Okey!, we didn't expect this");
+    //            } else {
+    //                for (let j = 0; j < excelModel.length; j++) {
+    //                    excelSheets.push({
+    //                        "ID": (excelModel[j])["_id"],
+    //                        "Sheets": Object.keys(excelModel[j]["_doc"])[1]
+    //                    });
+    //                }
+    //                res.render("dataSource/Update", {
+    //                    excelModel: excelSheets
+    //                });
+    //            }
+    //        });
+    //
+    //    }
 
 
 
@@ -180,6 +234,41 @@ router.get("/", (req, res) => {
     //            });
     //    let tables = Dynamic_HtmlTable(worksheet, 10);
     //    res.send(tables);
+
+});
+
+
+router.put("/", function (req, res) {
+    //    accessing the form data and creating a query string to send the variable to get route
+//    const querystring = require('querystring');
+    collectRequestData(req, result => {
+//        const query = querystring.stringify({
+//            "a": 1,
+//            "b": 2,
+//            "valid": result.key
+//        });
+
+        let XLSX = require('xlsx');
+        let workbook = XLSX.readFile(upload_path + "test.xlsx");
+        excelSheets = []; //reset the array
+        /* DO SOMETHING WITH workbook HERE */
+        //         for (let i = 0; i < workbook.SheetNames.length; i++) {
+        //                this will create a json object of the excel workbook
+        //                let sheetName = workbook.SheetNames[i];
+        let workSheet = workbook.Sheets[result.key.replace(/\s+/g, ' ').trim()];
+        let dhTable = XLSX.utils.sheet_to_json(workSheet, {
+            defval: "none"
+        });
+        //            }
+//        console.log(result.key.replace(/\s+/g, ' ').trim());
+//        console.log(dhTable);
+        res.send(Dynamic_HtmlTable(dhTable, 100));
+    });
+
+
+    //    let XLSX = require('xlsx');
+    //        let workbook = XLSX.readFile(upload_path + req.dataSourceName);
+    //    res.send("Update Route!");
 
 });
 
@@ -274,13 +363,20 @@ Dynamic_HtmlTable = (Dataframe, rows) => {
     let thead = "";
     let body = "";
     Header.forEach(item => {
-        thead += "<th>" + item + "</th>";
+        thead += "<th>" + item.replace(/\s+/g, ' ').trim() + "</th>";
     });
     let rowhead = "<thead><tr>" + thead + "</tr></thead>";
+    let rowsC;
+    if(rows < Dataframe.length && rows !== undefined && rows !== null){
+        rowsC = rows;
+    } else {
+        rowsC = Dataframe.length;
+    }
     let row = "";
-    for (let i = 0; i < rows; i++) {
+    for (let i = 0; i < rowsC; i++) {
         let dim = "";
         Header.forEach(column => {
+//            console.log(column);
             dim += "<td>" + Dataframe[i][column] + "</td>";
         });
         row += "<tr>" + dim + "</tr>";
